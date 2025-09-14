@@ -8,18 +8,8 @@ access_token = "89c68ff389fa5e86dd30e8aff7c8935a-b0cb097b4475427f7be111d81e76c94
 accountID = "101-004-31569953-001"
 api = oandapyV20.API(access_token=access_token, environment="practice")
 
-# List of forex pairs to check
-# Major and minor currency pairs (28 total)
-forex_pairs = [
-    # Major pairs
-    "EUR_USD", "GBP_USD", "USD_JPY", "USD_CHF", "USD_CAD", "AUD_USD", "NZD_USD",
-    
-    # Minor pairs (Cross currency pairs)
-    "EUR_GBP", "EUR_JPY", "EUR_CHF", "EUR_CAD", "EUR_AUD", "EUR_NZD",
-    "GBP_JPY", "GBP_CHF", "GBP_CAD", "GBP_AUD", "GBP_NZD",
-    "CHF_JPY", "CAD_CHF", "CAD_JPY", "AUD_CHF", "AUD_JPY", "AUD_CAD", "AUD_NZD",
-    "NZD_CHF", "NZD_JPY", "NZD_CAD"
-]
+# Smaller list for quick testing
+forex_pairs = ["EUR_USD", "GBP_USD", "USD_JPY"]
 
 def get_historical_data(instrument, granularity, count):
     """Fetches historical data for a given instrument."""
