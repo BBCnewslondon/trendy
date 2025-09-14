@@ -4,15 +4,21 @@ import pandas as pd
 from datetime import datetime
 
 # OANDA API credentials
-access_token = "YOUR_ACCESS_TOKEN"
-accountID = "YOUR_ACCOUNT_ID"
+access_token = "89c68ff389fa5e86dd30e8aff7c8935a-b0cb097b4475427f7be111d81e76c94b"
+accountID = "101-004-31569953-001"
 api = oandapyV20.API(access_token=access_token, environment="practice")
 
 # List of forex pairs to check
-# A smaller list for testing purposes
+# Major and minor currency pairs (28 total)
 forex_pairs = [
-    "EUR_USD", "GBP_USD", "USD_JPY", "AUD_USD", "USD_CAD",
-    "USD_CHF", "NZD_USD", "EUR_GBP", "EUR_JPY", "GBP_JPY"
+    # Major pairs
+    "EUR_USD", "GBP_USD", "USD_JPY", "USD_CHF", "USD_CAD", "AUD_USD", "NZD_USD",
+    
+    # Minor pairs (Cross currency pairs)
+    "EUR_GBP", "EUR_JPY", "EUR_CHF", "EUR_CAD", "EUR_AUD", "EUR_NZD",
+    "GBP_JPY", "GBP_CHF", "GBP_CAD", "GBP_AUD", "GBP_NZD",
+    "CHF_JPY", "CAD_CHF", "CAD_JPY", "AUD_CHF", "AUD_JPY", "AUD_CAD", "AUD_NZD",
+    "NZD_CHF", "NZD_JPY", "NZD_CAD"
 ]
 
 def get_historical_data(instrument, granularity, count):
