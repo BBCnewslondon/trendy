@@ -9,3 +9,4 @@ charset-normalizer==3.4.3
 idna==3.10
 urllib3==2.5.0
 openpyxl==3.1.5
+pyinstaller==6.10.0
