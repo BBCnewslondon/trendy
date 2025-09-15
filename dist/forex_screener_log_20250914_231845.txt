@@ -1,0 +1,10 @@
+2025-09-14 23:18:45,180 - INFO - Starting Forex Trend Screener...
+2025-09-14 23:18:45,180 - INFO - Python version: 3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]
+2025-09-14 23:18:45,180 - INFO - Current working directory: C:\Users\singh\trendy\dist
+2025-09-14 23:18:45,180 - INFO - Executable path: C:\Users\singh\trendy\dist\ForexTrendScreener_v2.exe
+2025-09-14 23:18:45,180 - INFO - Importing oandapyV20...
+2025-09-14 23:18:45,264 - INFO - Importing pandas...
+2025-09-14 23:18:45,292 - ERROR - Import error: Unable to import required dependencies:
+numpy: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.
