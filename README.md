@@ -147,6 +147,8 @@ executables\simplified\commodity_trend_screener_simple.exe  # 11 commodities, 1 
 executables\simplified\indices_trend_screener_simple.exe    # 5 indices, 1 timeframe (~75% faster)
 ```
 
+**Note:** Simplified versions display results in terminal only (no CSV files) for instant analysis.
+
 ## Choosing Between Full and Simplified Versions
 
 ### Use Full Versions When:
@@ -160,6 +162,8 @@ executables\simplified\indices_trend_screener_simple.exe    # 5 indices, 1 timef
 - Regular monitoring/alerts
 - Faster execution is preferred
 - Focus on key timeframe combinations only
+- Terminal output is sufficient (no CSV needed)
+- Real-time analysis without file management
 
 ## Building Executables
 

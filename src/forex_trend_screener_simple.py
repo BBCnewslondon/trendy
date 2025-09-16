@@ -160,27 +160,6 @@ def process_pair_simple(pair):
     
     return results
 
-def save_results_to_csv(results, filename):
-    """Save results to CSV file with simplified timeframes"""
-    try:
-        with open(filename, 'w', newline='', encoding='utf-8') as file:
-            if results:
-                # Write header
-                headers = list(results[0].keys())
-                file.write(','.join(headers) + '\n')
-                
-                # Write data
-                for result in results:
-                    row = [str(result[header]) for header in headers]
-                    file.write(','.join(row) + '\n')
-                
-                create_log_entry(f"Results saved to {filename}")
-            else:
-                file.write("No trending forex pairs found\n")
-                create_log_entry("No trending forex pairs found")
-    except Exception as e:
-        create_log_entry(f"Error saving results: {e}")
-
 def main():
     """Main function"""
     create_log_entry("Starting Simplified Forex Trend Screener (2 Timeframes)...")
@@ -203,31 +182,43 @@ def main():
         pair_results = process_pair_simple(pair)
         all_results.extend(pair_results)
     
-    # Generate filename with timestamp
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"forex_analysis_simple_{timestamp}.csv"
+    # Display comprehensive summary instead of CSV
+    create_log_entry("\n=== SIMPLIFIED FOREX TREND ANALYSIS COMPLETE ===")
     
-    # Save results
-    save_results_to_csv(all_results, filename)
+    if not all_results:
+        create_log_entry("No trending forex pairs found at this time.")
+    else:
+        # Count results by timeframe and trend type
+        timeframes = {}
+        for result in all_results:
+            tf = result["Timeframe_Combination"]
+            trend = result["Trend_Type"]
+            if tf not in timeframes:
+                timeframes[tf] = {"Long": 0, "Short": 0, "pairs": []}
+            timeframes[tf][trend] += 1
+            timeframes[tf]["pairs"].append(f"{result['Pair']} ({trend})")
+        
+        # Display summary by timeframe
+        for tf, data in timeframes.items():
+            create_log_entry(f"\n{tf.upper()}:")
+            create_log_entry(f"  - {data['Long']} Long trends, {data['Short']} Short trends")
+            
+            # Group and display trending pairs
+            long_pairs = [p for p in data["pairs"] if "(Long)" in p]
+            short_pairs = [p for p in data["pairs"] if "(Short)" in p]
+            
+            if long_pairs:
+                create_log_entry(f"  - Long trending pairs: {', '.join([p.replace(' (Long)', '') for p in long_pairs])}")
+            if short_pairs:
+                create_log_entry(f"  - Short trending pairs: {', '.join([p.replace(' (Short)', '') for p in short_pairs])}")
+        
+        create_log_entry(f"\nTOTAL SUMMARY:")
+        create_log_entry(f"  - Total trending pairs found: {len(all_results)}")
+        create_log_entry(f"  - Analyzed 28 forex pairs across 2 timeframe combinations")
+        create_log_entry(f"  - Execution time: ~50% faster than full version")
     
-    # Display summary
-    create_log_entry(f"\n=== SIMPLIFIED FOREX TREND ANALYSIS COMPLETE ===")
-    
-    # Count results by timeframe and trend type
-    timeframes = {}
-    for result in all_results:
-        tf = result["Timeframe_Combination"]
-        trend = result["Trend_Type"]
-        if tf not in timeframes:
-            timeframes[tf] = {"Long": 0, "Short": 0}
-        timeframes[tf][trend] += 1
-    
-    for tf, counts in timeframes.items():
-        create_log_entry(f"{tf}: {counts['Long']} Long, {counts['Short']} Short")
-    
-    create_log_entry(f"Total trending pairs found: {len(all_results)}")
-    create_log_entry(f"Results saved to: {filename}")
-    create_log_entry("Note: Simplified version analyzes only 2 timeframe combinations for faster execution")
+    create_log_entry("\nNote: Simplified version for quick market scanning")
+    create_log_entry("Use full version for comprehensive analysis and CSV export")
     
     input("Press Enter to exit...")
 
