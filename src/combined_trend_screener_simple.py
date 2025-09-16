@@ -149,27 +149,6 @@ def process_instrument(instrument, instrument_type):
     
     return results
 
-def save_results_to_csv(results, filename):
-    """Save results to CSV file"""
-    try:
-        with open(filename, 'w', newline='', encoding='utf-8') as file:
-            if results:
-                # Write header
-                headers = list(results[0].keys())
-                file.write(','.join(headers) + '\n')
-                
-                # Write data
-                for result in results:
-                    row = [str(result[header]) for header in headers]
-                    file.write(','.join(row) + '\n')
-                
-                create_log_entry(f"Results saved to {filename}")
-            else:
-                file.write("No trending instruments found\n")
-                create_log_entry("No trending instruments found")
-    except Exception as e:
-        create_log_entry(f"Error saving results: {e}")
-
 def main():
     """Main function"""
     create_log_entry("Starting Combined Simplified Trend Screener (1hr vs 1day)...")
@@ -240,11 +219,6 @@ def main():
         index_results.extend(index_results_temp)
         all_results.extend(index_results_temp)
     
-    # Save to CSV
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"combined_analysis_simple_{timestamp}.csv"
-    save_results_to_csv(all_results, filename)
-    
     # Display comprehensive summary (matching comprehensive scripts style)
     create_log_entry("\n=== COMBINED TREND ANALYSIS COMPLETE ===")
     
@@ -292,7 +266,6 @@ def main():
         print(f"  - Indices analyzed: 6 (Long: {len(index_long)}, Short: {len(index_short)})")
         print(f"  - Total trending instruments: {len(all_results)}")
         print(f"  - Timeframe combination: 1hr vs 1day")
-        print(f"  - Results saved to: {filename}")
         print("="*60)
     
     create_log_entry("\nNote: Combined simplified version for comprehensive market scanning")
