@@ -2,38 +2,73 @@
 
 This repository contains a comprehensive suite of trend analysis applications that analyze forex pairs, commodities, and stock indices using the OANDA API. All programs use the same EMA-based trend detection algorithm with multiple timeframe analysis.
 
+## Project Structure
+
+```
+trendy/
+├── src/                           # Source code files
+│   ├── forex_trend_screener_fixed.py     # Main forex screener (28 pairs, 4 timeframes)
+│   ├── forex_trend_screener_lightweight.py  # Quick forex screener (5 pairs)
+│   ├── forex_trend_screener_simple.py    # Simplified forex (28 pairs, 2 timeframes)
+│   ├── commodity_trend_screener.py       # Full commodity screener (11 commodities, 4 timeframes)
+│   ├── commodity_trend_screener_simple.py # Simple commodity (11 commodities, 1 timeframe)
+│   ├── indices_trend_screener.py         # Full indices screener (5 indices, 4 timeframes)
+│   └── indices_trend_screener_simple.py  # Simple indices (5 indices, 1 timeframe)
+├── executables/                   # Ready-to-use executables
+│   ├── ForexTrendScreener_Fixed.exe      # Main forex screener
+│   ├── ForexTrendScreener_Lite.exe       # Lightweight forex screener
+│   ├── CommodityTrendScreener_Fixed.exe  # Full commodity screener
+│   ├── IndicesTrendScreener_Fixed.exe    # Full stock index screener
+│   └── simplified/               # Faster simplified versions
+│       ├── forex_trend_screener_simple.exe      # Forex (2 timeframes only)
+│       ├── commodity_trend_screener_simple.exe  # Commodity (1 timeframe only)
+│       └── indices_trend_screener_simple.exe    # Indices (1 timeframe only)
+├── sample_output/                 # Sample CSV output files
+├── build_exe.bat                  # Build script for full versions
+├── build_simplified.bat           # Build script for simplified versions
+├── requirements.txt               # Python dependencies
+├── SIMPLIFIED_VERSIONS.md         # Documentation for simplified versions
+└── README.md                      # This file
+```
+
 ## Programs Included
 
 ### 1. Forex Trend Screener
-**Files:** `forex_trend_screener_fixed.py`, `ForexTrendScreener_Fixed.exe`
+**Full Version:** `src/forex_trend_screener_fixed.py`, `executables/ForexTrendScreener_Fixed.exe`
+**Simple Version:** `src/forex_trend_screener_simple.py`, `executables/simplified/forex_trend_screener_simple.exe`
 
 - Analyzes **28 major and minor forex pairs**
 - Covers all major currencies: EUR, GBP, USD, JPY, CHF, CAD, AUD, NZD
-- **4 timeframe combinations** analyzed per pair
+- **Full version:** 4 timeframe combinations analyzed per pair
+- **Simple version:** 2 timeframe combinations (1hr vs 1d, 4hr vs weekly) - ~50% faster
 - Generates detailed CSV reports
 
 ### 2. Commodity Trend Screener
-**Files:** `commodity_trend_screener.py`, `CommodityTrendScreener_Fixed.exe`
+**Full Version:** `src/commodity_trend_screener.py`, `executables/CommodityTrendScreener_Fixed.exe`
+**Simple Version:** `src/commodity_trend_screener_simple.py`, `executables/simplified/commodity_trend_screener_simple.exe`
 
 - Analyzes **11 major commodities**:
   - **Precious Metals:** Gold (XAU_USD), Silver (XAG_USD), Platinum (XPT_USD), Palladium (XPD_USD)
   - **Energy:** West Texas Oil (WTICO_USD), Brent Crude Oil (BCO_USD), Natural Gas (NATGAS_USD)
   - **Agricultural:** Corn (CORN_USD), Soybeans (SOYBN_USD), Wheat (WHEAT_USD), Sugar (SUGAR_USD)
-- **4 timeframe combinations** analyzed per commodity
+- **Full version:** 4 timeframe combinations analyzed per commodity
+- **Simple version:** 1 timeframe combination (4hr vs weekly) - ~75% faster
 - Generates detailed CSV reports
 
 ### 3. Stock Index Trend Screener
-**Files:** `indices_trend_screener.py`, `IndicesTrendScreener_Fixed.exe`
+**Full Version:** `src/indices_trend_screener.py`, `executables/IndicesTrendScreener_Fixed.exe`
+**Simple Version:** `src/indices_trend_screener_simple.py`, `executables/simplified/indices_trend_screener_simple.exe`
 
 - Analyzes **5 major stock indices**:
   - **US Indices:** S&P 500 (SPX500_USD), NASDAQ 100 (NAS100_USD), Dow Jones 30 (US30_USD)
   - **International:** FTSE 100 (UK100_GBP)
-  - **Bonds:** German 10Y Bund (DE10YB_EUR)
-- **4 timeframe combinations** analyzed per index
+  - **Bonds:** US 10-Year Treasury Note (USB10Y_USD)
+- **Full version:** 4 timeframe combinations analyzed per index
+- **Simple version:** 1 timeframe combination (4hr vs weekly) - ~75% faster
 - Generates detailed CSV reports
 
 ### 4. Lightweight Forex Screener
-**Files:** `forex_trend_screener_lightweight.py`, `ForexTrendScreener_Lite.exe`
+**Files:** `src/forex_trend_screener_lightweight.py`, `executables/ForexTrendScreener_Lite.exe`
 
 - Quick analysis of **5 major forex pairs**
 - Single timeframe combination (1hr vs 1d)
@@ -89,31 +124,60 @@ EUR_USD,1.17616,1hr vs 1d,Long,1.17234,1.16442,1.12917,1.17438,1.17287,1.17101,2
 
 ### Running Python Scripts
 ```bash
-python forex_trend_screener_fixed.py
-python commodity_trend_screener.py
-python indices_trend_screener.py
-python forex_trend_screener_lightweight.py
+python src/forex_trend_screener_fixed.py
+python src/commodity_trend_screener.py
+python src/indices_trend_screener.py
+python src/forex_trend_screener_lightweight.py
 ```
 
 ### Running Executables
-Simply double-click the .exe files or run from command line:
+
+#### Full Versions (Comprehensive Analysis)
 ```cmd
-ForexTrendScreener_Fixed.exe
-CommodityTrendScreener_Fixed.exe
-IndicesTrendScreener_Fixed.exe
-ForexTrendScreener_Lite.exe
+executables\ForexTrendScreener_Fixed.exe      # All 28 forex pairs, 4 timeframes
+executables\CommodityTrendScreener_Fixed.exe  # All 11 commodities, 4 timeframes  
+executables\IndicesTrendScreener_Fixed.exe    # All 5 indices, 4 timeframes
+executables\ForexTrendScreener_Lite.exe       # 5 major forex pairs only
 ```
+
+#### Simplified Versions (Faster Execution)
+```cmd
+executables\simplified\forex_trend_screener_simple.exe      # 28 forex pairs, 2 timeframes (~50% faster)
+executables\simplified\commodity_trend_screener_simple.exe  # 11 commodities, 1 timeframe (~75% faster)
+executables\simplified\indices_trend_screener_simple.exe    # 5 indices, 1 timeframe (~75% faster)
+```
+
+## Choosing Between Full and Simplified Versions
+
+### Use Full Versions When:
+- You need comprehensive analysis across all timeframes
+- Multiple timeframe confirmation is required
+- Research and detailed analysis is the goal
+- Time is not a constraint
+
+### Use Simplified Versions When:
+- Quick market scanning is needed
+- Regular monitoring/alerts
+- Faster execution is preferred
+- Focus on key timeframe combinations only
 
 ## Building Executables
 
+### Full Versions
 Use the provided build script:
 ```batch
 build_exe.bat
 ```
 
+### Simplified Versions  
+Use the simplified build script:
+```batch
+build_simplified.bat
+```
+
 Or build manually with PyInstaller:
 ```bash
-pyinstaller --onefile --name "ProgramName" script_name.py
+pyinstaller --onefile --name "ProgramName" --distpath=./executables src/script_name.py
 ```
 
 ## Sample Results
