@@ -52,10 +52,10 @@ def process_pair(pair):
     """Process a single forex pair"""
     create_log_entry(f"Analyzing {pair}...")
     
-    # Get daily data
-    daily_data = get_historical_data_simple(pair, "D", 300)
-    if not daily_data or 'candles' not in daily_data or len(daily_data['candles']) < 200:
-        create_log_entry(f"Not enough daily data for {pair}")
+    # Get monthly data
+    monthly_data = get_historical_data_simple(pair, "M", 300)
+    if not monthly_data or 'candles' not in monthly_data or len(monthly_data['candles']) < 200:
+        create_log_entry(f"Not enough monthly data for {pair}")
         return None
     
     # Get hourly data
@@ -65,47 +65,47 @@ def process_pair(pair):
         return None
     
     # Extract closing prices
-    daily_closes = [float(candle['mid']['c']) for candle in daily_data['candles']]
+    monthly_closes = [float(candle['mid']['c']) for candle in monthly_data['candles']]
     hourly_closes = [float(candle['mid']['c']) for candle in hourly_data['candles']]
     
     # Calculate EMAs
-    daily_ema_8 = calculate_ema(daily_closes, 8)
-    daily_ema_50 = calculate_ema(daily_closes, 50)
-    daily_ema_200 = calculate_ema(daily_closes, 200)
+    monthly_ema_8 = calculate_ema(monthly_closes, 8)
+    monthly_ema_50 = calculate_ema(monthly_closes, 50)
+    monthly_ema_200 = calculate_ema(monthly_closes, 200)
     
     hourly_ema_8 = calculate_ema(hourly_closes, 8)
     hourly_ema_50 = calculate_ema(hourly_closes, 50)
     hourly_ema_200 = calculate_ema(hourly_closes, 200)
     
-    if None in [daily_ema_8, daily_ema_50, daily_ema_200, hourly_ema_8, hourly_ema_50, hourly_ema_200]:
+    if None in [monthly_ema_8, monthly_ema_50, monthly_ema_200, hourly_ema_8, hourly_ema_50, hourly_ema_200]:
         create_log_entry(f"Failed to calculate EMAs for {pair}")
         return None
     
-    current_price = daily_closes[-1]
+    current_price = monthly_closes[-1]
     
     # Check for trends
     result = {
         'pair': pair,
         'price': current_price,
-        'daily_emas': [daily_ema_8, daily_ema_50, daily_ema_200],
+        'monthly_emas': [monthly_ema_8, monthly_ema_50, monthly_ema_200],
         'hourly_emas': [hourly_ema_8, hourly_ema_50, hourly_ema_200],
         'long_trend': False,
         'short_trend': False
     }
     
     # Long trend: 8 > 50 > 200 and price > 8
-    daily_long = daily_ema_8 > daily_ema_50 > daily_ema_200 and current_price > daily_ema_8
-    hourly_long = hourly_ema_8 > hourly_ema_50 > hourly_ema_200 and current_price > hourly_ema_8
+    monthly_long = monthly_ema_8 > monthly_ema_50 > monthly_ema_200 and current_price > monthly_ema_8  # type: ignore
+    hourly_long = hourly_ema_8 > hourly_ema_50 > hourly_ema_200 and current_price > hourly_ema_8  # type: ignore
     
-    if daily_long and hourly_long:
+    if monthly_long and hourly_long:
         result['long_trend'] = True
         create_log_entry(f"  -> {pair} added to long trending list")
     
     # Short trend: 200 > 50 > 8 and price < 8
-    daily_short = daily_ema_200 > daily_ema_50 > daily_ema_8 and current_price < daily_ema_8
-    hourly_short = hourly_ema_200 > hourly_ema_50 > hourly_ema_8 and current_price < hourly_ema_8
+    monthly_short = monthly_ema_200 > monthly_ema_50 > monthly_ema_8 and current_price < monthly_ema_8  # type: ignore
+    hourly_short = hourly_ema_200 > hourly_ema_50 > hourly_ema_8 and current_price < hourly_ema_8  # type: ignore
     
-    if daily_short and hourly_short:
+    if monthly_short and hourly_short:
         result['short_trend'] = True
         create_log_entry(f"  -> {pair} added to short trending list")
     
@@ -115,16 +115,16 @@ def save_results_to_csv(results, filename):
     """Save results to CSV file"""
     try:
         with open(filename, 'w') as f:
-            f.write("Pair,Price,Trend_Type,Daily_EMA_8,Daily_EMA_50,Daily_EMA_200,Hourly_EMA_8,Hourly_EMA_50,Hourly_EMA_200,Date\n")
+            f.write("Pair,Price,Trend_Type,Monthly_EMA_8,Monthly_EMA_50,Monthly_EMA_200,Hourly_EMA_8,Hourly_EMA_50,Hourly_EMA_200,Date\n")
             
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             for result in results:
                 if result['long_trend']:
-                    f.write(f"{result['pair']},{result['price']:.5f},Long,{result['daily_emas'][0]:.5f},{result['daily_emas'][1]:.5f},{result['daily_emas'][2]:.5f},{result['hourly_emas'][0]:.5f},{result['hourly_emas'][1]:.5f},{result['hourly_emas'][2]:.5f},{timestamp}\n")
+                    f.write(f"{result['pair']},{result['price']:.5f},Long,{result['monthly_emas'][0]:.5f},{result['monthly_emas'][1]:.5f},{result['monthly_emas'][2]:.5f},{result['hourly_emas'][0]:.5f},{result['hourly_emas'][1]:.5f},{result['hourly_emas'][2]:.5f},{timestamp}\n")
                 
                 if result['short_trend']:
-                    f.write(f"{result['pair']},{result['price']:.5f},Short,{result['daily_emas'][0]:.5f},{result['daily_emas'][1]:.5f},{result['daily_emas'][2]:.5f},{result['hourly_emas'][0]:.5f},{result['hourly_emas'][1]:.5f},{result['hourly_emas'][2]:.5f},{timestamp}\n")
+                    f.write(f"{result['pair']},{result['price']:.5f},Short,{result['monthly_emas'][0]:.5f},{result['monthly_emas'][1]:.5f},{result['monthly_emas'][2]:.5f},{result['hourly_emas'][0]:.5f},{result['hourly_emas'][1]:.5f},{result['hourly_emas'][2]:.5f},{timestamp}\n")
         
         return True
     except Exception as e:

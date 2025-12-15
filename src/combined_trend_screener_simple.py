@@ -55,14 +55,14 @@ def get_historical_data_simple(instrument, granularity, count):
         return None
 
 def process_instrument(instrument, instrument_type):
-    """Process a single instrument with 1hr vs 1day timeframe"""
+    """Process a single instrument with 1hr vs 1month timeframe"""
     create_log_entry(f"Analyzing {instrument}...")
     
-    # Get historical data for 1hr and 1day timeframes
-    daily_data = get_historical_data_simple(instrument, "D", 250)
+    # Get historical data for 1hr and 1month timeframes
+    monthly_data = get_historical_data_simple(instrument, "M", 250)
     h1_data = get_historical_data_simple(instrument, "H1", 250)
     
-    if not all([daily_data, h1_data]):
+    if not all([monthly_data, h1_data]):
         create_log_entry(f"Error fetching data for {instrument}")
         return []
     
@@ -93,10 +93,10 @@ def process_instrument(instrument, instrument_type):
         }
     
     # Get EMAs for timeframes
-    daily_emas = extract_emas(daily_data)
+    monthly_emas = extract_emas(monthly_data)
     h1_emas = extract_emas(h1_data)
     
-    if not daily_emas or not h1_emas:
+    if not monthly_emas or not h1_emas:
         create_log_entry(f"Error calculating EMAs for {instrument}")
         return []
     
@@ -111,8 +111,8 @@ def process_instrument(instrument, instrument_type):
     def check_short_trend(price, ema_8, ema_50, ema_200):
         return ema_200 > ema_50 > ema_8 and price < ema_8
     
-    # Check 1hr vs 1day timeframe combination
-    higher = daily_emas
+    # Check 1hr vs 1month timeframe combination
+    higher = monthly_emas
     lower = h1_emas
     
     # Check for long trend on both timeframes
@@ -135,11 +135,11 @@ def process_instrument(instrument, instrument_type):
         "Instrument": instrument,
         "Type": instrument_type,
         "Price": current_price,
-        "Timeframe_Combination": "1hr vs 1d",
+        "Timeframe_Combination": "1hr vs 1M",
         "Trend_Type": trend_type,
-        "Daily_EMA_8": round(higher['ema_8'], 5),
-        "Daily_EMA_50": round(higher['ema_50'], 5),
-        "Daily_EMA_200": round(higher['ema_200'], 5),
+        "Monthly_EMA_8": round(higher['ema_8'], 5),
+        "Monthly_EMA_50": round(higher['ema_50'], 5),
+        "Monthly_EMA_200": round(higher['ema_200'], 5),
         "H1_EMA_8": round(lower['ema_8'], 5),
         "H1_EMA_50": round(lower['ema_50'], 5),
         "H1_EMA_200": round(lower['ema_200'], 5),
@@ -151,7 +151,7 @@ def process_instrument(instrument, instrument_type):
 
 def main():
     """Main function"""
-    create_log_entry("Starting Combined Simplified Trend Screener (1hr vs 1day)...")
+    create_log_entry("Starting Combined Simplified Trend Screener (1hr vs 1month)...")
     
     # Define all instruments by category
     forex_pairs = [
@@ -243,19 +243,19 @@ def main():
         all_short_results = forex_short + commodity_short + index_short
         
         trend_labels = {
-            'long_1hr_1d': 'Long Trending Markets [1hr,1d]',
-            'short_1hr_1d': 'Short Trending Markets [1hr,1d]'
+            'long_1hr_1M': 'Long Trending Markets [1hr,1M]',
+            'short_1hr_1M': 'Short Trending Markets [1hr,1M]'
         }
         
         # Display long trending instruments with prices
         if all_long_results:
-            print(f"\n{trend_labels['long_1hr_1d']}: {len(all_long_results)}")
+            print(f"\n{trend_labels['long_1hr_1M']}: {len(all_long_results)}")
             for result in all_long_results:
                 print(f"  {result['Instrument']} - Price: {result['Price']:.5f}")
         
         # Display short trending instruments with prices
         if all_short_results:
-            print(f"\n{trend_labels['short_1hr_1d']}: {len(all_short_results)}")
+            print(f"\n{trend_labels['short_1hr_1M']}: {len(all_short_results)}")
             for result in all_short_results:
                 print(f"  {result['Instrument']} - Price: {result['Price']:.5f}")
         
@@ -265,7 +265,7 @@ def main():
         print(f"  - Commodities analyzed: 11 (Long: {len(commodity_long)}, Short: {len(commodity_short)})")
         print(f"  - Indices analyzed: 6 (Long: {len(index_long)}, Short: {len(index_short)})")
         print(f"  - Total trending instruments: {len(all_results)}")
-        print(f"  - Timeframe combination: 1hr vs 1day")
+        print(f"  - Timeframe combination: 1hr vs 1month")
         print("="*60)
     
     create_log_entry("\nNote: Combined simplified version for comprehensive market scanning")
