@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 
 # OANDA API credentials
-access_token = "89c68ff389fa5e86dd30e8aff7c8935a-b0cb097b4475427f7be111d81e76c94b"
+access_token = "8a04717231f3f3b293b12ed2f47b682d-5b3551fa7a4d19078f818393156f8b97"
 accountID = "101-004-31569953-001"
 
 def create_log_entry(message):
@@ -36,7 +36,7 @@ def get_historical_data_simple(instrument, granularity, count):
     """Fetch data using requests directly"""
     import requests
     
-    url = f"https://api-fxpractice.oanda.com/v3/instruments/{instrument}/candles"
+    url = f"https://api-fxtrade.oanda.com/v3/instruments/{instrument}/candles"
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"
